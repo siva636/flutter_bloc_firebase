@@ -1,32 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  final home = MaterialApp(
+    title: 'Flutter BLoC Firebase',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    home: MyHomePage(title: 'Home Page'),
+  );
+
+  final error = MaterialApp(
+    title: 'Error',
+    theme: ThemeData(
+      primarySwatch: Colors.red,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    home: ErrorPage(),
+  );
+
+  final splash = MaterialApp(
+    title: 'Flutter BLoC Firebase',
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    home: Splash(),
+  );
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return error;
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return home;
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return splash;
+      },
+    );
+  }
+}
+
+class Splash extends StatelessWidget {
+  const Splash({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
+class ErrorPage extends StatelessWidget {
+  const ErrorPage({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: Text('Oops!')),
     );
   }
 }

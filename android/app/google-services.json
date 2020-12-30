@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "882574254864",
+    "project_id": "flutter-bloc-firebase",
+    "storage_bucket": "flutter-bloc-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:882574254864:android:993ff0a0b2fb6815af3b95",
+        "android_client_info": {
+          "package_name": "ac.easypeasy.flutter_bloc_firebase"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "882574254864-nf0pvjqu1kchon7ta4phr8q1gmir4oh8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5b8X9UvG6RwOCSlhZOzVzjs5QmmsfTXM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "882574254864-nf0pvjqu1kchon7ta4phr8q1gmir4oh8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "882574254864-97g39lk8jdtsrnhukrqvlpm25u2a5kp0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ac.easypeasy.flutterBlocFirebase"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
