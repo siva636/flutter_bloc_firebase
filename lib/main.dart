@@ -1,9 +1,33 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_firebase/bloc_observer.dart';
+import 'package:flutter_bloc_firebase/profile/sign_up/view/sign_up_page.dart';
+import 'package:profile_repository/profile_repository.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
+  Bloc.observer = SimpleBlocObserver();
+  runApp(
+      // RepositoryProvider(
+      //   create: (context) => ProfileRepository(),
+      //   child: MyApp(),
+      // ),
+      MultiRepositoryProvider(
+          providers: [
+        RepositoryProvider<ProfileRepository>(
+          create: (context) => ProfileRepository(),
+        ),
+        RepositoryProvider<AuthenticationRepository>(
+          create: (context) => AuthenticationRepository(),
+        ),
+      ],
+          // child: BlocProvider(
+          //     create: (BuildContext context) =>
+          //         AuthenticationBloc(RepositoryProvider.of<AuthenticationRepository>(context)),
+          //     child: MyApp()),
+          child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +38,7 @@ class MyApp extends StatelessWidget {
       primarySwatch: Colors.blue,
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
-    home: MyHomePage(title: 'Home Page'),
+    home: SignUpPage(),
   );
 
   final error = MaterialApp(
