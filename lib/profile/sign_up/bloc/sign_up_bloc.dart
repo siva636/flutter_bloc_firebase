@@ -64,25 +64,33 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   SignUpState _emailChanged(EmailChanged event) {
     final email = Email.dirty(event.email);
     return state.copyWith(
-        email: email, status: Formz.validate([email, state.password]));
+        email: email,
+        status: Formz.validate(
+            [email, state.password, state.name, state.age, state.gender]));
   }
 
   SignUpState _emailUnfocused() {
     final email = Email.dirty(state.email.value);
     return state.copyWith(
-        email: email, status: Formz.validate([email, state.password]));
+        email: email,
+        status: Formz.validate(
+            [email, state.password, state.name, state.age, state.gender]));
   }
 
   SignUpState _passwordChanged(PasswordChanged event) {
     final password = Password.dirty(event.password);
     return state.copyWith(
-        password: password, status: Formz.validate([password, state.email]));
+        password: password,
+        status: Formz.validate(
+            [state.email, password, state.name, state.age, state.gender]));
   }
 
   SignUpState _passwordUnfocused() {
     final password = Password.dirty(state.password.value);
     return state.copyWith(
-        password: password, status: Formz.validate([password, state.email]));
+        password: password,
+        status: Formz.validate(
+            [state.email, password, state.name, state.age, state.gender]));
   }
 
   SignUpState _nameChanged(NameChanged event) {
@@ -90,7 +98,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return state.copyWith(
         name: name,
         status: Formz.validate(
-            [name, state.email, state.password, state.age, state.gender]));
+            [state.email, state.password, name, state.age, state.gender]));
   }
 
   SignUpState _nameUnfocused() {
@@ -98,7 +106,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return state.copyWith(
         name: name,
         status: Formz.validate(
-            [name, state.email, state.password, state.age, state.gender]));
+            [state.email, state.password, name, state.age, state.gender]));
   }
 
   SignUpState _ageChanged(AgeChanged event) {
@@ -106,7 +114,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return state.copyWith(
         age: age,
         status: Formz.validate(
-            [age, state.email, state.password, state.name, state.gender]));
+            [state.email, state.password, state.name, age, state.gender]));
   }
 
   SignUpState _ageUnfocused() {
@@ -114,7 +122,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return state.copyWith(
         age: age,
         status: Formz.validate(
-            [age, state.email, state.password, state.name, state.gender]));
+            [state.email, state.password, state.name, age, state.gender]));
   }
 
   SignUpState _genderChanged(GenderChanged event) {
@@ -122,7 +130,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return state.copyWith(
         gender: gender,
         status: Formz.validate(
-            [gender, state.email, state.password, state.name, state.age]));
+            [state.email, state.password, state.name, state.age, gender]));
   }
 
   SignUpState _genderUnfocused() {
@@ -130,7 +138,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return state.copyWith(
         gender: gender,
         status: Formz.validate(
-            [gender, state.email, state.password, state.name, state.age]));
+            [state.email, state.password, state.name, state.age, gender]));
   }
 
   Stream<SignUpState> _formSubmitted() async* {
@@ -152,7 +160,9 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             age: int.parse(state.age.value),
             gender: state.gender.value);
       } catch (e) {
-        print(e);
+        print('Sign up error! $e');
+        addError(Exception('Sign up error!'), StackTrace.current);
+        yield state.copyWith(status: FormzStatus.submissionFailure);
       }
       yield state.copyWith(status: FormzStatus.submissionSuccess);
     }

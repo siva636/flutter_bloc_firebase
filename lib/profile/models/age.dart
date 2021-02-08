@@ -1,6 +1,6 @@
 import 'package:formz/formz.dart';
 
-enum AgeValidationError { empty }
+enum AgeValidationError { invalid }
 
 class Age extends FormzInput<String, AgeValidationError> {
   const Age.pure() : super.pure('');
@@ -8,6 +8,8 @@ class Age extends FormzInput<String, AgeValidationError> {
 
   @override
   AgeValidationError validator(String value) {
-    return value?.isNotEmpty == true ? null : AgeValidationError.empty;
+    return value.indexOf('.') == -1 && double.tryParse(value) != null
+        ? null
+        : AgeValidationError.invalid;
   }
 }

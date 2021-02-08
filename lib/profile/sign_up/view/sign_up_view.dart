@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_firebase/profile/sign_up/bloc/sign_up_bloc.dart';
-import 'package:flutter_bloc_firebase/widgets/header.dart';
 import 'package:formz/formz.dart';
 
 class SignUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(appBar: header(), body: SignUpForm()),
-    );
+    return Scaffold(body: SafeArea(child: SignUpForm()));
   }
 }
 
@@ -39,6 +36,21 @@ class _SignUpFormState extends State<SignUpForm> {
         context.read<SignUpBloc>().add(PasswordUnfocused());
       }
     });
+    _nameFocusNode.addListener(() {
+      if (!_nameFocusNode.hasFocus) {
+        context.read<SignUpBloc>().add(NameUnfocused());
+      }
+    });
+    _ageFocusNode.addListener(() {
+      if (!_ageFocusNode.hasFocus) {
+        context.read<SignUpBloc>().add(AgeUnfocused());
+      }
+    });
+    _genderFocusNode.addListener(() {
+      if (!_genderFocusNode.hasFocus) {
+        context.read<SignUpBloc>().add(GenderUnfocused());
+      }
+    });
   }
 
   @override
@@ -56,11 +68,12 @@ class _SignUpFormState extends State<SignUpForm> {
     return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
         if (state.status.isSubmissionSuccess) {
-          Scaffold.of(context).hideCurrentSnackBar();
-          showDialog<void>(
-            context: context,
-            builder: (_) => SuccessDialog(),
-          );
+          Scaffold.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(content: Text('Success...')),
+            );
+          Navigator.of(context).pushNamed('/dashboard');
         }
         if (state.status.isSubmissionInProgress) {
           Scaffold.of(context)
@@ -71,15 +84,54 @@ class _SignUpFormState extends State<SignUpForm> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            EmailInput(focusNode: _emailFocusNode),
-            PasswordInput(focusNode: _passwordFocusNode),
-            NameInput(focusNode: _nameFocusNode),
-            AgeInput(focusNode: _ageFocusNode),
-            GenderInput(focusNode: _genderFocusNode),
-            SubmitButton(),
+            Text(
+              'Create Account,',
+              style: Theme.of(context).textTheme.headline3,
+            ),
+            Text('Sign up to get started!',
+                style: Theme.of(context).textTheme.headline4),
+            Spacer(flex: 4),
+            Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: EmailInput(focusNode: _emailFocusNode)),
+            Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: PasswordInput(focusNode: _passwordFocusNode)),
+            Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: NameInput(focusNode: _nameFocusNode)),
+            Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: AgeInput(focusNode: _ageFocusNode)),
+            Padding(
+                padding: EdgeInsets.only(bottom: 20),
+                child: GenderInput(focusNode: _genderFocusNode)),
+            Padding(
+              padding: EdgeInsets.only(bottom: 20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SubmitButton(),
+                  )
+                ],
+              ),
+            ),
+            Spacer(flex: 4),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("I'm already a member,"),
+                FlatButton(
+                    onPressed: null,
+                    child:
+                        Text('Sign In', style: TextStyle(color: Colors.red))),
+              ],
+            ),
           ],
         ),
       ),
@@ -97,19 +149,20 @@ class EmailInput extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          keyboardType: TextInputType.emailAddress,
           initialValue: state.email.value,
           focusNode: focusNode,
-          decoration: InputDecoration(
-            icon: const Icon(Icons.email),
-            labelText: 'Email',
-            helperText: 'A valid email, ex: name@example.com',
-            errorText: state.email.invalid ? 'Enter a valid email' : null,
-          ),
-          keyboardType: TextInputType.emailAddress,
           onChanged: (value) {
             context.read<SignUpBloc>().add(EmailChanged(email: value));
           },
-          textInputAction: TextInputAction.next,
+          // textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: 'Email',
+            errorText: state.email.invalid ? 'Enter a valid email' : null,
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(20.0))),
+            contentPadding: EdgeInsets.all(20),
+          ),
         );
       },
     );
@@ -126,23 +179,23 @@ class PasswordInput extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          keyboardType: TextInputType.visiblePassword,
           initialValue: state.password.value,
           focusNode: focusNode,
-          decoration: InputDecoration(
-            icon: const Icon(Icons.lock),
-            helperText: 'Password should be at least 6 characters',
-            helperMaxLines: 2,
-            labelText: 'Password',
-            errorMaxLines: 2,
-            errorText: state.password.invalid
-                ? 'Password must be at least 6 characters'
-                : null,
-          ),
           obscureText: true,
           onChanged: (value) {
             context.read<SignUpBloc>().add(PasswordChanged(password: value));
           },
-          textInputAction: TextInputAction.done,
+          // textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: 'Password',
+            errorText: state.password.invalid
+                ? 'Password must have at least 6 characters'
+                : null,
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(20.0))),
+            contentPadding: EdgeInsets.all(20),
+          ),
         );
       },
     );
@@ -159,20 +212,20 @@ class NameInput extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          keyboardType: TextInputType.name,
           initialValue: state.name.value,
           focusNode: focusNode,
-          decoration: InputDecoration(
-            icon: const Icon(Icons.account_circle),
-            helperText: 'Full name',
-            helperMaxLines: 2,
-            labelText: 'Name',
-            errorMaxLines: 2,
-            errorText: state.name.invalid ? 'Enter a valid name' : null,
-          ),
           onChanged: (value) {
             context.read<SignUpBloc>().add(NameChanged(name: value));
           },
-          textInputAction: TextInputAction.done,
+          // textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: 'Name',
+            errorText: state.name.invalid ? 'Enter a valid name' : null,
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(20.0))),
+            contentPadding: EdgeInsets.all(20),
+          ),
         );
       },
     );
@@ -189,21 +242,20 @@ class AgeInput extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          keyboardType: TextInputType.number,
           initialValue: state.age.value,
           focusNode: focusNode,
-          decoration: InputDecoration(
-            icon: const Icon(Icons.account_circle),
-            helperText: 'Age',
-            helperMaxLines: 2,
-            labelText: 'Age',
-            errorMaxLines: 2,
-            errorText:
-                state.age.invalid ? 'Enter a valid number for age' : null,
-          ),
           onChanged: (value) {
             context.read<SignUpBloc>().add(AgeChanged(age: value));
           },
-          textInputAction: TextInputAction.done,
+          // textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: 'Age',
+            errorText: state.age.invalid ? 'Enter a valid age' : null,
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(20.0))),
+            contentPadding: EdgeInsets.all(20),
+          ),
         );
       },
     );
@@ -220,21 +272,21 @@ class GenderInput extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       builder: (context, state) {
         return TextFormField(
+          keyboardType: TextInputType.text,
           initialValue: state.gender.value,
           focusNode: focusNode,
-          decoration: InputDecoration(
-            icon: const Icon(Icons.account_circle),
-            helperText: 'Gender',
-            helperMaxLines: 2,
-            labelText: 'Gender',
-            errorMaxLines: 2,
-            errorText:
-                state.gender.invalid ? 'Enter whether male or female' : null,
-          ),
           onChanged: (value) {
             context.read<SignUpBloc>().add(GenderChanged(gender: value));
           },
-          textInputAction: TextInputAction.done,
+          // textInputAction: TextInputAction.next,
+          decoration: InputDecoration(
+            labelText: 'Gender',
+            errorText:
+                state.gender.invalid ? 'Enter either male or female' : null,
+            border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(20.0))),
+            contentPadding: EdgeInsets.all(20),
+          ),
         );
       },
     );
@@ -248,51 +300,25 @@ class SubmitButton extends StatelessWidget {
     return BlocBuilder<SignUpBloc, SignUpState>(
       buildWhen: (previous, current) => previous.status != current.status,
       builder: (context, state) {
-        return RaisedButton(
-          onPressed: state.status.isValidated
+        return ElevatedButton(
+          style: ButtonStyle(shape: MaterialStateProperty.all(StadiumBorder())),
+
+          onPressed: state.status.isValidated &&
+                  !state.status.isSubmissionInProgress &&
+                  !state.status.isSubmissionSuccess
               ? () => context.read<SignUpBloc>().add(FormSubmitted())
               : null,
-          child: const Text('Submit'),
+
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              'Submit',
+              style: TextStyle(fontSize: 20),
+            ),
+          ),
+          // textTheme: ButtonTextTheme.accent,
         );
       },
-    );
-  }
-}
-
-class SuccessDialog extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                const Icon(Icons.info),
-                const Flexible(
-                  child: Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      'Form Submitted Successfully!',
-                      softWrap: true,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            RaisedButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
