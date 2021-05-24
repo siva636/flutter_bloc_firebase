@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_firebase/profile/sign_up/bloc/sign_up_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:flutter/foundation.dart';
 
 class SignUpView extends StatelessWidget {
   @override
@@ -83,56 +84,61 @@ class _SignUpFormState extends State<SignUpForm> {
             );
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Create Account,',
-              style: Theme.of(context).textTheme.headline3,
-            ),
-            Text('Sign up to get started!',
-                style: Theme.of(context).textTheme.headline4),
-            Spacer(flex: 4),
-            Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: EmailInput(focusNode: _emailFocusNode)),
-            Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: PasswordInput(focusNode: _passwordFocusNode)),
-            Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: NameInput(focusNode: _nameFocusNode)),
-            Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: AgeInput(focusNode: _ageFocusNode)),
-            Padding(
-                padding: EdgeInsets.only(bottom: 20),
-                child: GenderInput(focusNode: _genderFocusNode)),
-            Padding(
-              padding: EdgeInsets.only(bottom: 20),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: SubmitButton(),
-                  )
-                ],
-              ),
-            ),
-            Spacer(flex: 4),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("I'm already a member,"),
-                FlatButton(
-                    onPressed: null,
-                    child:
-                        Text('Sign In', style: TextStyle(color: Colors.red))),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: kIsWeb ? 500 : double.infinity),
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'Create Account,',
+                  style: Theme.of(context).textTheme.headline3,
+                ),
+                Text('Sign up to get started!',
+                    style: Theme.of(context).textTheme.headline4),
+                Spacer(flex: 4),
+                Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: EmailInput(focusNode: _emailFocusNode)),
+                Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: PasswordInput(focusNode: _passwordFocusNode)),
+                Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: NameInput(focusNode: _nameFocusNode)),
+                Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: AgeInput(focusNode: _ageFocusNode)),
+                Padding(
+                    padding: EdgeInsets.only(bottom: 20),
+                    child: GenderInput(focusNode: _genderFocusNode)),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SubmitButton(),
+                      )
+                    ],
+                  ),
+                ),
+                Spacer(flex: 4),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("I'm already a member,"),
+                    FlatButton(
+                        onPressed: null,
+                        child: Text('Sign In',
+                            style: TextStyle(color: Colors.red))),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -8,7 +8,7 @@ import 'package:flutter_bloc_firebase/profile/sign_up/view/sign_up_page.dart';
 import 'package:profile_repository/profile_repository.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
   runApp(
     MultiRepositoryProvider(
@@ -33,6 +33,7 @@ class MyApp extends StatelessWidget {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
   final home = MaterialApp(
+    debugShowCheckedModeBanner:false,
     title: 'Flutter BLoC Firebase',
     theme: ThemeData(
       primarySwatch: Colors.blue,

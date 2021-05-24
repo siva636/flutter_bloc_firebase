@@ -7,7 +7,8 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Dashboard', style: Theme.of(context).textTheme.headline3),
+        child: Text('Thank You!', style: Theme.of(context).textTheme.headline3),
+        // child: Text('Dashboard', style: Theme.of(context).textTheme.headline3),
       ),
     );
   }
