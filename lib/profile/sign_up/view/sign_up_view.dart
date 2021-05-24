@@ -69,7 +69,7 @@ class _SignUpFormState extends State<SignUpForm> {
     return BlocListener<SignUpBloc, SignUpState>(
       listener: (context, state) {
         if (state.status.isSubmissionSuccess) {
-          Scaffold.of(context)
+          ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
               const SnackBar(content: Text('Success...')),
@@ -77,7 +77,7 @@ class _SignUpFormState extends State<SignUpForm> {
           Navigator.of(context).pushNamed('/dashboard');
         }
         if (state.status.isSubmissionInProgress) {
-          Scaffold.of(context)
+          ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
               const SnackBar(content: Text('Submitting...')),
@@ -130,10 +130,13 @@ class _SignUpFormState extends State<SignUpForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("I'm already a member,"),
-                    FlatButton(
-                        onPressed: null,
-                        child: Text('Sign In',
-                            style: TextStyle(color: Colors.red))),
+                    TextButton(
+                      onPressed: null,
+                      child: Text(
+                        'Sign In',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                   ],
                 ),
               ],
